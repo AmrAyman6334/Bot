@@ -2,20 +2,51 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>بروفايل اللاعب</title>
+  <title>بروفايل اللاعب | AmrBot</title>
   <link rel="stylesheet" href="style.css">
   <style>
+    body {
+      background-color: #0f0f0f;
+      color: #fff;
+      font-family: 'Tajawal', sans-serif;
+      text-align: center;
+      padding: 40px 20px;
+      direction: rtl;
+    }
+
+    h1 {
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      margin: 10px;
+      padding: 12px 24px;
+      background-color: #5865F2;
+      color: #fff;
+      text-decoration: none;
+      font-size: 18px;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #4752c4;
+    }
+
     .profile-container {
       position: relative;
       width: 350px;
       height: 500px;
-      margin: 0 auto;
-      background-image: url('https://i.imgur.com/5W8XNyJ.jpeg'); /* خلفية وهمية */
+      margin: 30px auto;
+      background-image: url('https://i.imgur.com/5W8XNyJ.jpeg');
       background-size: cover;
       background-position: center;
       border-radius: 20px;
       box-shadow: 0 0 20px rgba(0,0,0,0.7);
       overflow: hidden;
+      display: none;
     }
 
     .avatar {
@@ -24,7 +55,6 @@
       border-radius: 50%;
       border: 4px solid white;
       margin: 40px auto 10px;
-      background-image: url('https://cdn.discordapp.com/avatars/1382655315820150794/a_5801c9f14c94a7a6ef9aa4fba59d7f95.gif?size=1024');
       background-size: cover;
       background-position: center;
     }
@@ -52,17 +82,43 @@
 
   <h1>🎮 بروفايل اللاعب</h1>
 
-  <div class="profile-container">
-    <div class="avatar"></div>
+  <!-- تسجيل الدخول -->
+  <div id="login">
+    <a class="btn" href="https://discord.com/oauth2/authorize?client_id=1382655315820150794&redirect_uri=https%3A%2F%2Famrbot-auth.glitch.me%2Fcallback&response_type=code&scope=identify">
+      🔐 تسجيل الدخول بحساب Discord
+    </a>
+  </div>
+
+  <!-- عرض البروفايل -->
+  <div id="profile" class="profile-container">
+    <div id="avatar" class="avatar"></div>
     <div class="info">
-      <h2>عمرو</h2>
+      <h2 id="username">جارٍ التحميل...</h2>
       <p>💰 الرصيد: 5,000,000 كريدت</p>
       <p>🎨 الخلفية رقم: 3</p>
     </div>
   </div>
 
+  <!-- رجوع -->
   <br>
   <a class="btn" href="index.html">🏠 رجوع للرئيسية</a>
 
+  <!-- سكربت التسجيل الحقيقي -->
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+
+    if (code) {
+      fetch(`https://amrbot-auth.glitch.me/callback?code=${code}`)
+        .then(res => res.json())
+        .then(user => {
+          document.getElementById("login").style.display = "none";
+          document.getElementById("profile").style.display = "block";
+          document.getElementById("username").innerText = user.username + "#" + user.discriminator;
+          document.getElementById("avatar").style.backgroundImage = `url(${user.avatar})`;
+        })
+        .catch(() => alert("⚠️ فشل تسجيل الدخول"));
+    }
+  </script>
 </body>
 </html>
